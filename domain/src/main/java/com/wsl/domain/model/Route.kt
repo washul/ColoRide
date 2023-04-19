@@ -1,6 +1,7 @@
 package com.wsl.domain.model
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -10,7 +11,7 @@ class Route {
     lateinit var departureArrival: Pair<City, City>
     lateinit var description: String
     lateinit var auto: Auto
-    lateinit var date: LocalDate
+    lateinit var date: LocalDateTime
     lateinit var people: List<User>
     var time: LocalTime? = null
     val owner: User

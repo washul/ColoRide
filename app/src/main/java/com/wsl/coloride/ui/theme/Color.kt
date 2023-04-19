@@ -2,7 +2,19 @@ package com.wsl.coloride.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+/**
+ * Default dark system color
+ * */
+internal val onSurface = Color(0xFF121212)
+internal val ColorOnBackground = Color(0xFFFFFFFF)
+
+
+/**
+ * Default light system color
+ * */
+internal val Primary = Color(0xFFFF9800)
+internal val Secundary = Color(0xFF29B6F6)
+internal val OptionalColor = Color(0xFFFFB74D)
+
+internal val Background = Color(0xFFFFFFFF)
+

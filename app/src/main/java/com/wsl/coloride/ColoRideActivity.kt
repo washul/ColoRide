@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -18,6 +19,8 @@ import com.wsl.coloride.screens.detail.ui.DetailNavRoute
 import com.wsl.coloride.screens.detail.ui.DetailScreen
 import com.wsl.coloride.screens.routes.ui.RouteNavRoute
 import com.wsl.coloride.screens.routes.ui.RoutesScreen
+import com.wsl.coloride.ui.main.MainAppBar
+import com.wsl.coloride.ui.main.MainScaffold
 import com.wsl.coloride.ui.theme.ColoRideTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,15 +34,29 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = RouteNavRoute.route) {
-                        composable(RouteNavRoute.route) { RoutesScreen(navController = navController) }
-                        composable(
-                            DetailNavRoute.route,
-                            arguments = listOf(navArgument(DetailNavRoute.ROUTE_ID_PARAM) { type = NavType.StringType })
-                        ) { backStack ->
-                            DetailScreen(routeId = backStack.arguments?.getString(DetailNavRoute.ROUTE_ID_PARAM))
+
+                    MainScaffold(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .systemBarsPadding()
+                    ) {
+
+                        val navController = rememberNavController()
+                        NavHost(
+                            navController = navController,
+                            startDestination = RouteNavRoute.route
+                        ) {
+                            composable(RouteNavRoute.route) { RoutesScreen(navController = navController) }
+                            composable(
+                                DetailNavRoute.route,
+                                arguments = listOf(navArgument(DetailNavRoute.ROUTE_ID_PARAM) {
+                                    type = NavType.StringType
+                                })
+                            ) { backStack ->
+                                DetailScreen(routeId = backStack.arguments?.getString(DetailNavRoute.ROUTE_ID_PARAM))
+                            }
                         }
+
                     }
                 }
             }
