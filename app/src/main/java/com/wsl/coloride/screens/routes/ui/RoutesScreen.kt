@@ -42,6 +42,11 @@ object RouteNavRoute : NavigationRoute {
     override val route: String = "routes_screen"
 }
 
+//TODO hacer la logica de marcar en favoritos y enviar por whatsapp
+//login
+//register
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RoutesScreen(

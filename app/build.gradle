@@ -73,6 +73,9 @@ dependencies {
     def composeLiveData = "1.4.0"
     implementation "androidx.compose.runtime:runtime-livedata:$composeLiveData"
 
+    //Compose constraint layout
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
     //Koin
     def koin_version = "3.3.2"
     implementation"io.insert-koin:koin-android:$koin_version"
