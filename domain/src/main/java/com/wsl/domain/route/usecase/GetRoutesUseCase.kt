@@ -5,6 +5,7 @@ import com.wsl.domain.model.Route
 import com.wsl.domain.route.datasource.RouteDataSource
 import com.wsl.utils.Failure
 import com.wsl.utils.Response
+import com.wsl.utils.map
 import java.time.LocalDateTime
 
 class GetRoutesUseCase(private val dataSource: RouteDataSource) :

@@ -15,24 +15,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.wsl.coloride.R
 import com.wsl.coloride.ui.theme.Secundary
 import com.wsl.domain.model.Route
 import com.wsl.domain.model.UserType
+import com.wsl.utils.extentions.hasMidStar
 import com.wsl.utils.extentions.showHourAsString
 import com.wsl.utils.extentions.showTodayTomorrow
 
@@ -40,8 +38,8 @@ import com.wsl.utils.extentions.showTodayTomorrow
 @Composable
 fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
 
-    val maxHeight = 200.dp
-    val minHeight = 150.dp
+    val maxHeight = 230.dp
+    val minHeight = 180.dp
 
     var isSmallSize by rememberSaveable { mutableStateOf(true) }
     val size by animateDpAsState(targetValue = if (isSmallSize) minHeight else maxHeight)
@@ -59,9 +57,14 @@ fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
             LeftSide(route = route, modifier = Modifier.height(maxHeight))
 
             //Right
+            //Close
             RightSideOnClose(route = route, modifier = Modifier.height(maxHeight))
-
-            RightSideOnOpen(route = route, isSmallSize = isSmallSize, modifier = Modifier.padding(8.dp))
+            //Open
+            RightSideOnOpen(
+                route = route,
+                isSmallSize = isSmallSize,
+                modifier = Modifier.padding(8.dp)
+            )
 
         }
 
@@ -70,7 +73,7 @@ fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun RightSideOnOpen(route: Route, isSmallSize: Boolean, modifier: Modifier){
+fun RightSideOnOpen(route: Route, isSmallSize: Boolean, modifier: Modifier) {
     if (!isSmallSize)
         Row(modifier = modifier) {
             route.people.forEach { user ->
@@ -85,6 +88,7 @@ fun RightSideOnOpen(route: Route, isSmallSize: Boolean, modifier: Modifier){
             }
         }
 }
+
 @Composable
 fun RightSideOnClose(route: Route, modifier: Modifier) {
     ConstraintLayout(modifier = modifier.padding(8.dp)) {
@@ -163,7 +167,7 @@ fun LeftSide(route: Route, modifier: Modifier) {
             .background(Secundary)
     ) {
 
-        val (glideProfileImage, textDate, textTime) = createRefs()
+        val (glideProfileImage, rowRating, textDate, textTime) = createRefs()
 
         GlideImage(
             model = route.people.find { it.userType == UserType.OWNER }?.image,
@@ -178,6 +182,17 @@ fun LeftSide(route: Route, modifier: Modifier) {
                     top.linkTo(parent.top)
                 }
         )
+
+        Row(modifier = Modifier
+            .constrainAs(rowRating) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(glideProfileImage.bottom, margin = 4.dp)
+            }) {
+
+            CreateUserRating(route)
+
+        }
 
         // Subtitle
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
@@ -216,5 +231,41 @@ fun LeftSide(route: Route, modifier: Modifier) {
 
         }
 
+    }
+}
+
+@Composable
+fun CreateUserRating(route: Route) {
+    //put full and half stars
+    val rating = route.owner.rating.asOwner
+    repeat(rating.toInt()) {
+        Icon(
+            painter = painterResource(id = R.drawable.complete_star),
+            contentDescription = "Rating",
+            tint = Color.Yellow,
+            modifier = Modifier.size(15.dp),
+        )
+        Spacer(modifier = Modifier.width(5.dp))
+
+        if (it == rating.toInt()-1 && route.owner.rating.asOwner.hasMidStar()) {
+            Icon(
+                painter = painterResource(id = R.drawable.half_star),
+                contentDescription = "Rating",
+                tint = Color.Yellow,
+                modifier = Modifier.size(15.dp),
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+        }
+    }
+
+    //put empty stars
+    repeat((rating.toInt()..5).count()) {
+        Icon(
+            painter = painterResource(id = R.drawable.empty_star),
+            contentDescription = "Rating",
+            tint = Color.LightGray,
+            modifier = Modifier.size(15.dp),
+        )
+        Spacer(modifier = Modifier.width(5.dp))
     }
 }

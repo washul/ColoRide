@@ -8,5 +8,6 @@ data class User(
     val email: String,
     val whatsApp: String,
     val image: Uri,
+    val rating: UserRating = UserRating(),
     val userType: UserType = UserType.PASSENGER
 )
