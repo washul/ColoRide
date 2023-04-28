@@ -45,7 +45,7 @@ object RouteNavRoute : NavigationRoute {
 //TODO hacer la logica de marcar en favoritos y enviar por whatsapp
 //login
 //register
-//sistema de calificacion
+//sistema de calificacion al crear [check]
 //sistema de aceptacion de pasagero
 //crear ruta
 

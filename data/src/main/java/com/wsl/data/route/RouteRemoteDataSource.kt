@@ -5,12 +5,8 @@ import com.wsl.domain.model.*
 import com.wsl.utils.Failure
 import com.wsl.utils.Response
 import com.wsl.utils.extentions.isBetween
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Period
-import java.util.Date
 
 val COLOTLAN_URI =
     Uri.parse("https://scontent.fgdl2-1.fna.fbcdn.net/v/t1.6435-9/31417147_1920243717997340_7156260193469202432_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=e3f864&_nc_eui2=AeE8eiPa95dqSB32momsb0Ak-4XY32wquGT7hdjfbCq4ZCDtMxbHYI_PzyUJedXv-XMcdrI3v09gKZ2s_xw0JTrh&_nc_ohc=Ux6dAUwCxVAAX-2Rpue&_nc_ht=scontent.fgdl2-1.fna&oh=00_AfAJYa_JwmZxdthw2ihLPeAiPLZPAhbxJgX7P9JJT47o7w&oe=64405FC4")
@@ -113,6 +109,7 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now()
             time = LocalTime.of(16, 30)
+            doesOwnerNeedsApprove = true
         },
         Route().apply {
             departureArrival = Pair(
@@ -136,6 +133,7 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now()
             time = LocalTime.of(20, 30)
+            doesOwnerNeedsApprove = false
         },
         Route().apply {
             departureArrival = Pair(
@@ -159,6 +157,7 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now()
             time = LocalTime.of(19, 0)
+            doesOwnerNeedsApprove = true
         },
         Route().apply {
             departureArrival = Pair(
@@ -182,6 +181,7 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now().plusDays(1)
             time = LocalTime.of(19, 0)
+            doesOwnerNeedsApprove = false
         },
         Route().apply {
             departureArrival = Pair(
@@ -205,6 +205,7 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now().plusDays(1)
             time = LocalTime.of(19, 0)
+            doesOwnerNeedsApprove = true
         },
         Route().apply {
             departureArrival = Pair(
@@ -228,5 +229,6 @@ private fun getRoutesMock(): List<Route> {
             auto = Auto()
             date = LocalDateTime.now().plusDays(2)
             time = LocalTime.of(19, 0)
+            doesOwnerNeedsApprove = false
         })
 }

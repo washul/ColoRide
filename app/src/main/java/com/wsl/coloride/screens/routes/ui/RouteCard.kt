@@ -1,5 +1,6 @@
 package com.wsl.coloride.screens.detail.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,6 +31,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.wsl.coloride.R
 import com.wsl.coloride.ui.theme.Secundary
 import com.wsl.domain.model.Route
+import com.wsl.domain.model.User
 import com.wsl.domain.model.UserType
 import com.wsl.utils.extentions.hasMidStar
 import com.wsl.utils.extentions.showHourAsString
@@ -38,7 +41,7 @@ import com.wsl.utils.extentions.showTodayTomorrow
 @Composable
 fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
 
-    val maxHeight = 230.dp
+    val maxHeight = 250.dp
     val minHeight = 180.dp
 
     var isSmallSize by rememberSaveable { mutableStateOf(true) }
@@ -54,60 +57,73 @@ fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
 
         Row {
             //Left
-            LeftSide(route = route, modifier = Modifier.height(maxHeight))
-
-            //Right
-            //Close
-            RightSideOnClose(route = route, modifier = Modifier.height(maxHeight))
-            //Open
-            RightSideOnOpen(
-                route = route,
-                isSmallSize = isSmallSize,
-                modifier = Modifier.padding(8.dp)
+            LeftSide(
+                route = route, modifier = Modifier.height(size)
             )
 
+            //Right
+            RightSide(route = route, isSmallSize = isSmallSize, modifier = Modifier.fillMaxSize())
         }
 
     }
 }
 
+@Composable
+fun RightSide(route: Route, isSmallSize: Boolean, modifier: Modifier) {
+    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = modifier) {
+        Header(
+            route = route, modifier = Modifier.padding(8.dp)
+        )
+
+        //Open
+        AnimatedVisibility(visible = !isSmallSize, modifier = Modifier.fillMaxWidth()) {
+            Body(
+                route = route,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        //Bottom
+        Bottom(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+    }
+}
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun RightSideOnOpen(route: Route, isSmallSize: Boolean, modifier: Modifier) {
-    if (!isSmallSize)
-        Row(modifier = modifier) {
-            route.people.forEach { user ->
-                GlideImage(
-                    model = user.image,
-                    contentDescription = "User image",
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .size(60.dp)
-                )
+fun Body(route: Route, modifier: Modifier) {
+    Column(modifier = modifier) {
+
+        if (route.doesOwnerNeedsApprove)
+            Text(text = "Owner needs to approve.")
+
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            repeat(route.people.count()) {
+                PassengerMiniature(route.people[it])
             }
         }
+    }
+
 }
 
 @Composable
-fun RightSideOnClose(route: Route, modifier: Modifier) {
-    ConstraintLayout(modifier = modifier.padding(8.dp)) {
-
-        val (textTitle, textDescription, rowButtons) = createRefs()
-
+fun Header(route: Route, modifier: Modifier) {
+    Column(modifier = modifier) {
         // title
         Text(
             text = route.title,
             style = MaterialTheme.typography.h6,
             color = Color.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(textTitle) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                }
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Description
@@ -119,40 +135,38 @@ fun RightSideOnClose(route: Route, modifier: Modifier) {
                 style = MaterialTheme.typography.body2,
                 color = Color.Gray,
                 textAlign = TextAlign.Justify,
-                modifier = Modifier.constrainAs(textDescription) {
-                    top.linkTo(textTitle.bottom, margin = 12.dp)
-                    start.linkTo(textTitle.start)
-                    end.linkTo(textTitle.end)
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
             )
         }
+    }
 
-        //Buttons
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+}
 
-            // Icon Buttons like/share
-            Row(
-                modifier = Modifier
-                    .constrainAs(rowButtons) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                    }
-            ) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                }
+@Composable
+fun Bottom(modifier: Modifier) {
+    //Buttons
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
 
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        Icons.Default.Share,
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                }
+        // Icon Buttons like/share
+        Row(
+            modifier = modifier
+        ) {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = Color.Gray
+                )
+            }
+
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    Icons.Default.Share,
+                    contentDescription = null,
+                    tint = Color.Gray
+                )
             }
         }
     }
@@ -234,6 +248,8 @@ fun LeftSide(route: Route, modifier: Modifier) {
     }
 }
 
+
+//Components
 @Composable
 fun CreateUserRating(route: Route) {
     //put full and half stars
@@ -247,7 +263,7 @@ fun CreateUserRating(route: Route) {
         )
         Spacer(modifier = Modifier.width(5.dp))
 
-        if (it == rating.toInt()-1 && route.owner.rating.asOwner.hasMidStar()) {
+        if (it == rating.toInt() - 1 && route.owner.rating.asOwner.hasMidStar()) {
             Icon(
                 painter = painterResource(id = R.drawable.half_star),
                 contentDescription = "Rating",
@@ -268,4 +284,21 @@ fun CreateUserRating(route: Route) {
         )
         Spacer(modifier = Modifier.width(5.dp))
     }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun PassengerMiniature(passenger: User) {
+    Column {
+        GlideImage(
+            model = passenger.image,
+            contentDescription = "User image",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .size(40.dp)
+        )
+        Text(text = passenger.userName)
+
+    }
+
 }

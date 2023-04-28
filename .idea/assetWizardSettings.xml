@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/star_border/baseline_star_border_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/star_half/baseline_star_half_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="9c9c9c" />
-                            <entry key="outputName" value="empty_star" />
+                            <entry key="color" value="f6ea02" />
+                            <entry key="outputName" value="half_star" />
                           </map>
                         </option>
                       </PersistentState>

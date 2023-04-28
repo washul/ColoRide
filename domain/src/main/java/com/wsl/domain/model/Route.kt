@@ -1,6 +1,5 @@
 package com.wsl.domain.model
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
@@ -14,6 +13,9 @@ class Route {
     lateinit var date: LocalDateTime
     lateinit var people: List<User>
     var time: LocalTime? = null
+    var doesOwnerNeedsApprove: Boolean = false
+
+
     val owner: User
         get() {return people.find { it.userType == UserType.OWNER }!!}
     val title: String
