@@ -1,17 +1,13 @@
 # ColoRide
 This is an Android app to help handle the rides from two cities. 
 
-## Comenzando 🚀
+## Starting 🚀
 _This is open source software, my try to add value to the humanity._
 
-### Pre-requisitos 📋
+### Prerequisites 📋
 _Android Studio Flamingo | 2022.2.1_
 
-## Unit testing⚙️
-
-_Unit testing is coming..._
-
-### Unit Testing 🔩
+## Unit testing ⚙️
 
 _Unit testing is coming..._
 
