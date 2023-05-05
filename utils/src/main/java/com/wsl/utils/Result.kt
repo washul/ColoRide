@@ -11,12 +11,12 @@ package com.wsl.utils
  * @see Failure
  * @see Success
  */
-sealed class Response<out L, out R> {
+sealed class Result<out L, out R> {
     /** * Represents the left side of [Response] class which by convention is a "Failure". */
-    data class Failure<out L>(val a: L) : Response<L, Nothing>()
+    data class Failure<out L>(val a: L) : Result<L, Nothing>()
 
     /** * Represents the right side of [Response] class which by convention is a "Success". */
-    data class Success<out R>(val b: R) : Response<Nothing, R>()
+    data class Success<out R>(val b: R) : Result<Nothing, R>()
 
     /**
      * Returns true if this is a Success, false otherwise.
@@ -64,10 +64,10 @@ sealed class Response<out L, out R> {
  * Right-biased flatMap() FP convention which means that Success is assumed to be the default case
  * to operate on. If it is Failure... return the Failure value unchanged.
  */
-inline fun <T, L, R> Response<L, R>.flatMap(fn: (R) -> Response<L, T>): Response<L, T> =
+inline fun <T, L, R> Result<L, R>.flatMap(fn: (R) -> Result<L, T>): Result<L, T> =
     when (this) {
-        is Response.Failure -> Response.Failure(a)
-        is Response.Success -> fn(b)
+        is Result.Failure -> Result.Failure(a)
+        is Result.Success -> fn(b)
     }
 
 
@@ -75,19 +75,19 @@ inline fun <T, L, R> Response<L, R>.flatMap(fn: (R) -> Response<L, T>): Response
  * Right-biased map() FP convention which means that Success is assumed to be the default case
  * to operate on. If it is Failure... return the Failure value unchanged.
  */
-inline fun <T, L, R> Response<L, R>.map(fn: (R) -> (T)): Response<L, T> =
+inline fun <T, L, R> Result<L, R>.map(fn: (R) -> (T)): Result<L, T> =
     when (this) {
-        is Response.Failure -> Response.Failure(a)
-        is Response.Success -> Response.Success(fn(b))
+        is Result.Failure -> Result.Failure(a)
+        is Result.Success -> Result.Success(fn(b))
     }
 
 /** Returns the value from this `Success` or the given argument if this is a `Failure`.
  *  Success(12).getOrElse(17) RETURNS 12 and Failure(12).getOrElse(17) RETURNS 17
  */
-fun <L, R> Response<L, R>.getOrElse(value: R): R =
+fun <L, R> Result<L, R>.getOrElse(value: R): R =
     when (this) {
-        is Response.Failure -> value
-        is Response.Success -> b
+        is Result.Failure -> value
+        is Result.Success -> b
     }
 
 /**
@@ -95,13 +95,13 @@ fun <L, R> Response<L, R>.getOrElse(value: R): R =
  * the onFailure functionality passed as a parameter, but, overall will still return an either
  * object so you chain calls.
  */
-inline fun <L, R> Response<L, R>.onFailure(fn: (failure: L) -> Unit): Response<L, R> =
-    this.apply { if (this is Response.Failure) fn(a) }
+inline fun <L, R> Result<L, R>.onFailure(fn: (failure: L) -> Unit): Result<L, R> =
+    this.apply { if (this is Result.Failure) fn(a) }
 
 /**
  * Right-biased onSuccess() FP convention dictates that when this class is Success, it'll perform
  * the onSuccess functionality passed as a parameter, but, overall will still return an either
  * object so you chain calls.
  */
-inline fun <L, R> Response<L, R>.onSuccess(fn: (success: R) -> Unit): Response<L, R> =
-    this.apply { if (this is Response.Success) fn(b) }
+inline fun <L, R> Result<L, R>.onSuccess(fn: (success: R) -> Unit): Result<L, R> =
+    this.apply { if (this is Result.Success) fn(b) }

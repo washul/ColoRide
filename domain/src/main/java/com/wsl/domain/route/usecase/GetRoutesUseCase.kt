@@ -4,7 +4,7 @@ import com.wsl.domain.UseCaseWithParams
 import com.wsl.domain.model.Route
 import com.wsl.domain.route.datasource.RouteDataSource
 import com.wsl.utils.Failure
-import com.wsl.utils.Response
+import com.wsl.utils.Result
 import com.wsl.utils.map
 import java.time.LocalDateTime
 
@@ -18,7 +18,7 @@ class GetRoutesUseCase(private val dataSource: RouteDataSource) :
         val cityArrival: String
     )
 
-    override suspend fun invoke(params: Params): Response<Failure, Map<Int, List<Route>>> {
+    override suspend fun invoke(params: Params): Result<Failure, Map<Int, List<Route>>> {
         return dataSource.getRoutes(
             params.startDate,
             params.endDate,

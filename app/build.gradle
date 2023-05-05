@@ -65,7 +65,6 @@ dependencies {
 
     //LifeCycle
     def lifeCycle = "2.4.0"
-//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycle"
 

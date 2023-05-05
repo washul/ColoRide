@@ -1,4 +1,4 @@
-package com.wsl.coloride.screens.detail.ui
+package com.wsl.coloride.screens.routes.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,13 +30,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.wsl.coloride.R
+import com.wsl.coloride.ui.main.AutoResizedText
 import com.wsl.coloride.ui.theme.Secundary
 import com.wsl.domain.model.Route
 import com.wsl.domain.model.User
 import com.wsl.domain.model.UserType
-import com.wsl.utils.extentions.hasMidStar
-import com.wsl.utils.extentions.showHourAsString
-import com.wsl.utils.extentions.showTodayTomorrow
+import com.wsl.utils.extensions.hasMidStar
+import com.wsl.utils.extensions.showHourAsString
+import com.wsl.utils.extensions.showTodayTomorrow
 
 
 @Composable
@@ -92,10 +94,9 @@ fun RightSide(route: Route, isSmallSize: Boolean, modifier: Modifier) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun Body(route: Route, modifier: Modifier) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
 
         if (route.doesOwnerNeedsApprove)
             Text(text = "Owner needs to approve.")
@@ -107,7 +108,7 @@ fun Body(route: Route, modifier: Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             repeat(route.people.count()) {
-                PassengerMiniature(route.people[it])
+                PassengerMiniature(route.people[it], Modifier)
             }
         }
     }
@@ -288,17 +289,17 @@ fun CreateUserRating(route: Route) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PassengerMiniature(passenger: User) {
-    Column {
+fun PassengerMiniature(passenger: User, modifier: Modifier) {
+    Column(modifier = modifier) {
+
         GlideImage(
             model = passenger.image,
             contentDescription = "User image",
             modifier = Modifier
+                .align(CenterHorizontally)
                 .clip(RoundedCornerShape(10.dp))
-                .size(40.dp)
+                .size(30.dp)
         )
-        Text(text = passenger.userName)
-
+        AutoResizedText(text = passenger.userName, modifier = modifier.width(60.dp))
     }
-
 }

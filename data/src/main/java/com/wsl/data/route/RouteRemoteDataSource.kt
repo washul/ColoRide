@@ -3,8 +3,8 @@ package com.wsl.data.route
 import android.net.Uri
 import com.wsl.domain.model.*
 import com.wsl.utils.Failure
-import com.wsl.utils.Response
-import com.wsl.utils.extentions.isBetween
+import com.wsl.utils.Result
+import com.wsl.utils.extensions.isBetween
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -14,13 +14,11 @@ val GDL_URI =
     Uri.parse("https://toursgdl.com/wp-content/uploads/2019/06/a-close-up-of-a-yellow-building-description-autom.jpeg.webp")
 
 val COLOTLAN_CITY = City(
-    name = "Colotlan",
-    image = COLOTLAN_URI
+    name = "Colotlan"
 )
 
 val GDL_CITY = City(
-    name = "Guadalajara",
-    image = GDL_URI
+    name = "Guadalajara"
 )
 
 class RouteRemoteDataSource {
@@ -34,7 +32,7 @@ class RouteRemoteDataSource {
         endDate: LocalDateTime,
         cityDeparture: String,
         cityArrival: String
-    ): Response<Failure, Map<Int, List<Route>>> {
+    ): Result<Failure, Map<Int, List<Route>>> {
 
         val routes: Map<Int, List<Route>> = getRoutesMock()
             .filter {
@@ -45,7 +43,7 @@ class RouteRemoteDataSource {
                 it.date.dayOfMonth
             }
 
-        return Response.Success(
+        return Result.Success(
             routes
         )
     }
@@ -62,7 +60,7 @@ private fun getRoutesMock(): List<Route> {
             people = listOf(
                 User(
                     UUID = "123454321",
-                    userName = "WSL",
+                    userName = "El poderoso WSL Yandel",
                     email = "wsl@wsl.com",
                     whatsApp = "+521234567890",
                     userType = UserType.OWNER,

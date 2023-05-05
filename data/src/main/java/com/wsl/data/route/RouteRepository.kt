@@ -3,7 +3,7 @@ package com.wsl.data.route
 import com.wsl.domain.model.Route
 import com.wsl.domain.route.datasource.RouteDataSource
 import com.wsl.utils.Failure
-import com.wsl.utils.Response
+import com.wsl.utils.Result
 import java.time.LocalDateTime
 
 class RouteRepository(
@@ -18,7 +18,7 @@ class RouteRepository(
         cityDeparture: String,
         cityArrival: String
     ):
-            Response<Failure, Map<Int, List<Route>>> {
+            Result<Failure, Map<Int, List<Route>>> {
         return remoteDataSource.getRoutes(startDate, endDate, cityDeparture, cityArrival)
     }
 

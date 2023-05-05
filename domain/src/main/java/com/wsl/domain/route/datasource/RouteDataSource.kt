@@ -2,7 +2,7 @@ package com.wsl.domain.route.datasource
 
 import com.wsl.domain.model.Route
 import com.wsl.utils.Failure
-import com.wsl.utils.Response
+import com.wsl.utils.Result
 import java.time.LocalDateTime
 
 interface RouteDataSource {
@@ -11,6 +11,6 @@ interface RouteDataSource {
         startDate: LocalDateTime, endDate: LocalDateTime,
         cityDeparture: String,
         cityArrival: String
-    ): Response<Failure, Map<Int, List<Route>>>
+    ): Result<Failure, Map<Int, List<Route>>>
 
 }

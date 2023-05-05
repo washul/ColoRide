@@ -1,4 +1,4 @@
-package com.wsl.utils.extentions
+package com.wsl.utils.extensions
 
 import java.time.LocalDate
 import java.time.LocalDateTime
