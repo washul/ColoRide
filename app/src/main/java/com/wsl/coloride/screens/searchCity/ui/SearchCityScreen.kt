@@ -31,7 +31,7 @@ object SearchCityNavRoute : NavigationRoute {
     const val SEARCH_PLACE_PARAM = "search_city_param"
     override val route: String = "search_city_screen/{$SEARCH_PLACE_PARAM}"
     fun createRoute(place: PlaceOfTheRoute): String {
-        return SearchCityNavRoute.route.replace("{${SEARCH_PLACE_PARAM}}", place.toCustomString())
+        return route.replace("{${SEARCH_PLACE_PARAM}}", place.toCustomString())
     }
 }
 

@@ -63,6 +63,12 @@ dependencies {
     implementation project(path: ":data")
     implementation project(path: ":utils")
 
+    //Date and Time Pickers from maxkeppeler
+
+    api "com.maxkeppeler.sheets-compose-dialogs:core:1.0.2"
+    api "com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2"
+    api "com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2"
+
     //LifeCycle
     def lifeCycle = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycle"
