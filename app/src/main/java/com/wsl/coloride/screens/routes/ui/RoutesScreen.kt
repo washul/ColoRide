@@ -97,9 +97,15 @@ fun RoutesScreen(
 
 @Composable
 fun FloatingActionButtonCreateRoute(onCreateRouteClick: () -> Unit) {
-    FloatingActionButton(onClick = { onCreateRouteClick() }) {
-        Icon(painter = painterResource(id = R.drawable.add_icon), contentDescription = "add route")
-    }
+    ExtendedFloatingActionButton(
+        text = { Text(text = "add") },
+        onClick = { onCreateRouteClick() },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.add_icon),
+                contentDescription = "add route"
+            )
+        })
 }
 
 
