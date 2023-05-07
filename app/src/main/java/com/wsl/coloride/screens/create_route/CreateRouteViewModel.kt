@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.wsl.domain.city.usecases.GetCityPreferenceUseCase
 import com.wsl.domain.model.City
 import com.wsl.domain.model.PlaceOfTheRoute
+import com.wsl.domain.model.Route
 import com.wsl.utils.onFailure
 import com.wsl.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class CreateRouteViewModel(
@@ -24,6 +26,9 @@ class CreateRouteViewModel(
     private val _onEvent = MutableStateFlow<CreateRouteEvent>(CreateRouteEvent.Success)
     val onEvent: StateFlow<CreateRouteEvent> get() = _onEvent
 
+    fun createRoute() {
+
+    }
 
     fun getDepartureFromPreferences() {
         viewModelScope.launch(Dispatchers.IO) {

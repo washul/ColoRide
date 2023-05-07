@@ -1,6 +1,6 @@
 package com.wsl.coloride.screens.create_route.ui
 
-import androidx.compose.foundation.background
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,15 +9,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,7 +37,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -42,10 +47,14 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.wsl.coloride.R
 import com.wsl.coloride.screens.create_route.CreateRouteEvent
 import com.wsl.coloride.screens.create_route.CreateRouteViewModel
 import com.wsl.coloride.screens.searchCity.ui.SearchCityNavRoute
+import com.wsl.coloride.ui.main.AutoResizedText
 import com.wsl.coloride.ui.theme.Secundary
 import com.wsl.coloride.util.observeAsState
 import com.wsl.domain.model.City
@@ -72,154 +81,247 @@ fun CreateRouteScreen(
     val arrival by viewModel.arrival.collectAsState()
 
     CreateRouteView(
-        departureCty = departure,
+        departureCity = departure,
         arrivalCity = arrival,
         onChangeDepartureCity = { viewModel.postEvent(CreateRouteEvent.LookingForDepartureCity) },
         onChangeArrivalCity = { viewModel.postEvent(CreateRouteEvent.LookingForArrivalCity) },
+        onSaveRoute = { viewModel.createRoute() },
+        isSaveButtonEnable = false,
         modifier = Modifier
+            .padding(8.dp)
             .fillMaxSize()
     )
 
 
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun CreateRouteView(
-    departureCty: City,
+    departureCity: City,
     arrivalCity: City,
     onChangeDepartureCity: () -> Unit,
     onChangeArrivalCity: () -> Unit,
+    onSaveRoute: () -> Unit,
+    isSaveButtonEnable: Boolean = false,
     modifier: Modifier
 ) {
-    Scaffold(modifier = modifier) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
-        ) {
-            Ruta(
-                departureCity = departureCty,
-                arrivalCity = arrivalCity,
+    Scaffold(modifier = modifier) {
+        Column(modifier = modifier) {
+
+            //Date and Time
+            DateAndTime(modifier = Modifier.fillMaxWidth())
+
+            Spacer(Modifier.height(32.dp))
+
+            //Departure and Arrival City
+            Text(text = "Departure and Arrival")
+
+            Spacer(Modifier.height(8.dp))
+
+            CityBoxView(
+                name = departureCity.name,
+                subtext = "From: \t\t",
                 onChangeDepartureCity = onChangeDepartureCity,
-                onChangeArrivalCity = onChangeArrivalCity,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            CityBoxView(
+                name = arrivalCity.name,
+                subtext = "To: \t\t",
+                onChangeDepartureCity = onChangeArrivalCity,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            //Description
+
+            var descriptionTextState by remember {
+                mutableStateOf("")
+            }
+            Text(text = "Description")
+            Spacer(Modifier.height(8.dp))
+            TextField(
+                singleLine = false,
+                value = descriptionTextState,
+                onValueChange = { descriptionTextState = it },
+                maxLines = 6,
+                placeholder = { Text(text = "Write a description to say something or annunce somthing to yours passengers") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(40.dp))
+
+            RadioButtonsPreferences(Modifier.fillMaxWidth())
+
+            SaveButton(isSaveButtonEnable, onSaveRoute)
+
         }
     }
 }
 
 @Composable
-private fun Ruta(
-    departureCity: City,
-    arrivalCity: City,
-    modifier: Modifier,
-    onChangeDepartureCity: () -> Unit,
-    onChangeArrivalCity: () -> Unit
-) {
-    Column(modifier = modifier) {
-
-        //Date and Time
-        DateAndTime(modifier = Modifier.fillMaxWidth())
-
-//        Spacer(Modifier.height(8.dp))
-//        Divider(
-//            Modifier
-//                .height(1.dp)
-//                .background(Color.LightGray)
-//        )
-        Spacer(Modifier.height(16.dp))
-
-        //Departure and Arrival City
-        CityBoxView(
-            name = departureCity.name,
-            subtext = "From: \t\t",
-            onChangeDepartureCity = onChangeDepartureCity,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        CityBoxView(
-            name = arrivalCity.name,
-            subtext = "To: \t\t",
-            onChangeDepartureCity = onChangeArrivalCity,
-            modifier = Modifier.fillMaxWidth()
-        )
+fun SaveButton(isSaveButtonEnable: Boolean = false, onSaveRoute: () -> Unit) {
+    Button(
+        onClick = { onSaveRoute() },
+        enabled = isSaveButtonEnable,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = "Save")
     }
+}
+
+
+@Composable
+fun RadioButtonsPreferences(modifier: Modifier) {
+    Card(modifier = modifier) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            //Constraints
+            val (preferencesTitleText, infoButton, preferenceText, preferenceSwitch) = createRefs()
+
+            Text(
+                "Preferences",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(preferencesTitleText) {
+                        start.linkTo(parent.start, margin = 8.dp)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    })
+
+            var preferenceAcceptPassengerState by remember {
+                mutableStateOf(true)
+            }
+
+            //Dialog info setUp
+            val infoDialogState = rememberSheetState()
+            InfoDialog(
+                state = infoDialogState,
+                body = InfoBody.Default(
+                    bodyText = "Active this option if you want us to ask you about accept a passenger.",
+                ),
+                selection = InfoSelection(
+                    onPositiveClick = {},
+                    onNegativeClick = { infoDialogState.hide() })
+            )
+
+            IconButton(
+                onClick = { infoDialogState.show() },
+                Modifier
+                    .size(20.dp)
+                    .constrainAs(infoButton) {
+                        start.linkTo(parent.start)
+                        top.linkTo(preferencesTitleText.top, margin = 8.dp)
+                        bottom.linkTo(parent.bottom)
+                    }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.info),
+                    contentDescription = "info button",
+                    tint = Color.LightGray
+                )
+            }
+            AutoResizedText(
+                text = "Will be necessary ask you to accept passenger?",
+                modifier = Modifier.constrainAs(preferenceText) {
+                    start.linkTo(infoButton.end, margin = 4.dp)
+                    top.linkTo(preferencesTitleText.top, margin = 8.dp)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(preferenceSwitch.start, margin = 8.dp)
+                }
+            )
+            Switch(
+                checked = preferenceAcceptPassengerState,
+                onCheckedChange = {
+                    preferenceAcceptPassengerState = !preferenceAcceptPassengerState
+                },
+                Modifier.constrainAs(preferenceSwitch) {
+                    top.linkTo(preferencesTitleText.top, margin = 8.dp)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
+    }
+
 
 }
 
 @Composable
 fun DateAndTime(modifier: Modifier) {
-    Card(elevation = 4.dp, modifier = modifier) {
 
-        Column(modifier = Modifier.padding(4.dp)) {
-            Text(text = "Date and Time:")
 
-            Spacer(modifier = Modifier.height(4.dp))
+    Column(modifier = modifier) {
+        Text(text = "Date and Time:")
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                var todayDate by remember { mutableStateOf(LocalDate.now()) }
-                var todayTime by remember { mutableStateOf(LocalTime.now()) }
+        Spacer(modifier = Modifier.height(4.dp))
 
-                val calendarState = rememberSheetState()
-                val clockState = rememberSheetState()
-                ClockDialog(
-                    state = clockState,
-                    config = ClockConfig(is24HourFormat = true),
-                    selection = ClockSelection.HoursMinutes { hours, minutes ->
-                        todayTime = LocalTime.now().withHour(hours).withMinute(minutes)
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            var todayDate by remember { mutableStateOf(LocalDate.now()) }
+            var todayTime by remember { mutableStateOf(LocalTime.now()) }
+
+            val calendarState = rememberSheetState()
+            val clockState = rememberSheetState()
+            ClockDialog(
+                state = clockState,
+                config = ClockConfig(is24HourFormat = true),
+                selection = ClockSelection.HoursMinutes { hours, minutes ->
+                    todayTime = LocalTime.now().withHour(hours).withMinute(minutes)
+                }
+            )
+            CalendarDialog(
+                state = calendarState,
+                selection = CalendarSelection.Date {
+                    todayDate = it
+                }
+            )
+
+            //Date
+            OutlinedTextField(
+                value = todayDate.appendTodayTomorrow(),
+                onValueChange = {},
+                readOnly = true,
+                maxLines = 1,
+                modifier = Modifier.weight(1f),
+                trailingIcon = {
+                    IconButton(onClick = { calendarState.show() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.calendar_today),
+                            contentDescription = "change date"
+                        )
                     }
-                )
-                CalendarDialog(
-                    state = calendarState,
-                    selection = CalendarSelection.Date {
-                        todayDate = it
-                    }
-                )
+                }
+            )
 
-                //Date
-                OutlinedTextField(
-                    value = todayDate.appendTodayTomorrow(),
-                    onValueChange = {},
-                    readOnly = true,
-                    maxLines = 1,
-                    modifier = Modifier.weight(1f),
-                    trailingIcon = {
-                        IconButton(onClick = { calendarState.show() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.calendar_today),
-                                contentDescription = "change date"
-                            )
-                        }
-                    }
-                )
+            Spacer(modifier = Modifier.width(4.dp))
 
-                Spacer(modifier = Modifier.width(4.dp))
-
-                //Time
-                OutlinedTextField(
-                    value = todayTime.show12HoursFormatter(),
-                    onValueChange = {},
-                    readOnly = true,
-                    maxLines = 1,
-                    modifier = Modifier.weight(1f),
-                    trailingIcon = {
-                        IconButton(onClick = { clockState.show() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.access_time),
-                                contentDescription = "change date"
-                            )
-                        }
+            //Time
+            OutlinedTextField(
+                value = todayTime.show12HoursFormatter(),
+                onValueChange = {},
+                readOnly = true,
+                maxLines = 1,
+                modifier = Modifier.weight(1f),
+                trailingIcon = {
+                    IconButton(onClick = { clockState.show() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.access_time),
+                            contentDescription = "change date"
+                        )
                     }
-                )
-            }
+                }
+            )
         }
     }
+
 }
 
 @Composable
@@ -288,11 +390,12 @@ fun EventsUI(viewModel: CreateRouteViewModel, navController: NavController) {
 @Composable
 fun CreateRoutePreview() {
     CreateRouteView(
-        departureCty = City(name = "Guadalajara, Jalisco, Mexico"),
+        departureCity = City(name = "Guadalajara, Jalisco, Mexico"),
         arrivalCity = City(name = "Colotlan, Jalisco, Mexico"),
         onChangeDepartureCity = {},
         onChangeArrivalCity = {},
-        modifier = Modifier.fillMaxSize()
+        onSaveRoute = {},
+        modifier = Modifier.padding(8.dp).fillMaxSize()
     )
 }
 

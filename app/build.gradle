@@ -68,6 +68,7 @@ dependencies {
     api "com.maxkeppeler.sheets-compose-dialogs:core:1.0.2"
     api "com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2"
     api "com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2"
+    api "com.maxkeppeler.sheets-compose-dialogs:info:1.0.2"
 
     //LifeCycle
     def lifeCycle = "2.4.0"
