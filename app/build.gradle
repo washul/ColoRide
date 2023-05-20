@@ -64,7 +64,6 @@ dependencies {
     implementation project(path: ":utils")
 
     //Date and Time Pickers from maxkeppeler
-
     api "com.maxkeppeler.sheets-compose-dialogs:core:1.0.2"
     api "com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2"
     api "com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2"
@@ -94,9 +93,15 @@ dependencies {
     //Glide Compose
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 
+    //Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android: 1.6.4"
+
 
     //Testing
     testImplementation 'junit:junit:4.13.2'
+    testImplementation "io.mockk:mockk:1.12.2"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test: 1.6.4"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"

@@ -19,6 +19,8 @@ import com.wsl.coloride.screens.create_route.ui.CreateRouteNavRoute
 import com.wsl.coloride.screens.create_route.ui.CreateRouteScreen
 import com.wsl.coloride.screens.detail.ui.DetailNavRoute
 import com.wsl.coloride.screens.detail.ui.DetailScreen
+import com.wsl.coloride.screens.loadauto.ui.LoadAutoNavRoute
+import com.wsl.coloride.screens.loadauto.ui.LoadAutoScreen
 import com.wsl.coloride.screens.routes.ui.RouteNavRoute
 import com.wsl.coloride.screens.routes.ui.RoutesScreen
 import com.wsl.coloride.screens.searchCity.ui.SearchCityNavRoute
@@ -64,6 +66,14 @@ class MainActivity : ComponentActivity() {
                                     ).toPlaceOfTheRoute(),
                                     navController = navController
                                 )
+                            }
+                            composable(
+                                LoadAutoNavRoute.route,
+                                arguments = listOf(navArgument(LoadAutoNavRoute.USER_PARAM) {
+                                    type = NavType.StringType
+                                })
+                            ){ backStack ->
+                                LoadAutoScreen(user = backStack.arguments?.getString(LoadAutoNavRoute.USER_PARAM))
                             }
                             composable(
                                 DetailNavRoute.route,

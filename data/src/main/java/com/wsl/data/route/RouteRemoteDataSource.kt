@@ -8,11 +8,6 @@ import com.wsl.utils.extensions.isBetween
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-val COLOTLAN_URI =
-    Uri.parse("https://scontent.fgdl2-1.fna.fbcdn.net/v/t1.6435-9/31417147_1920243717997340_7156260193469202432_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=e3f864&_nc_eui2=AeE8eiPa95dqSB32momsb0Ak-4XY32wquGT7hdjfbCq4ZCDtMxbHYI_PzyUJedXv-XMcdrI3v09gKZ2s_xw0JTrh&_nc_ohc=Ux6dAUwCxVAAX-2Rpue&_nc_ht=scontent.fgdl2-1.fna&oh=00_AfAJYa_JwmZxdthw2ihLPeAiPLZPAhbxJgX7P9JJT47o7w&oe=64405FC4")
-val GDL_URI =
-    Uri.parse("https://toursgdl.com/wp-content/uploads/2019/06/a-close-up-of-a-yellow-building-description-autom.jpeg.webp")
-
 val COLOTLAN_CITY = City(
     name = "Colotlan"
 )

@@ -6,6 +6,8 @@ sealed class CreateRouteEvent {
 
     object LookingForArrivalCity: CreateRouteEvent()
 
+    object LoadAuto: CreateRouteEvent()
+
     object LoadingShouldShow: CreateRouteEvent()
 
     object Success: CreateRouteEvent()

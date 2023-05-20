@@ -15,6 +15,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
@@ -39,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -53,6 +53,7 @@ import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.wsl.coloride.R
 import com.wsl.coloride.screens.create_route.CreateRouteEvent
 import com.wsl.coloride.screens.create_route.CreateRouteViewModel
+import com.wsl.coloride.screens.loadauto.ui.LoadAutoNavRoute
 import com.wsl.coloride.screens.searchCity.ui.SearchCityNavRoute
 import com.wsl.coloride.ui.main.AutoResizedText
 import com.wsl.coloride.ui.theme.Secundary
@@ -77,14 +78,8 @@ fun CreateRouteScreen(
 ) {
     EventsUI(viewModel = viewModel, navController = navController)
 
-    val departure by viewModel.departure.collectAsState()
-    val arrival by viewModel.arrival.collectAsState()
-
     CreateRouteView(
-        departureCity = departure,
-        arrivalCity = arrival,
-        onChangeDepartureCity = { viewModel.postEvent(CreateRouteEvent.LookingForDepartureCity) },
-        onChangeArrivalCity = { viewModel.postEvent(CreateRouteEvent.LookingForArrivalCity) },
+        viewModel = viewModel,
         onSaveRoute = { viewModel.createRoute() },
         isSaveButtonEnable = false,
         modifier = Modifier
@@ -98,71 +93,104 @@ fun CreateRouteScreen(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun CreateRouteView(
-    departureCity: City,
-    arrivalCity: City,
-    onChangeDepartureCity: () -> Unit,
-    onChangeArrivalCity: () -> Unit,
+    viewModel: CreateRouteViewModel,
     onSaveRoute: () -> Unit,
     isSaveButtonEnable: Boolean = false,
     modifier: Modifier
 ) {
     Scaffold(modifier = modifier) {
-        Column(modifier = modifier) {
+        Column(modifier = modifier, verticalArrangement = Arrangement.SpaceEvenly) {
 
             //Date and Time
-            DateAndTime(modifier = Modifier.fillMaxWidth())
+            DateAndTime(
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(Modifier.height(32.dp))
 
-            //Departure and Arrival City
-            Text(text = "Departure and Arrival")
-
-            Spacer(Modifier.height(8.dp))
-
-            CityBoxView(
-                name = departureCity.name,
-                subtext = "From: \t\t",
-                onChangeDepartureCity = onChangeDepartureCity,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            CityBoxView(
-                name = arrivalCity.name,
-                subtext = "To: \t\t",
-                onChangeDepartureCity = onChangeArrivalCity,
-                modifier = Modifier.fillMaxWidth()
+            //Departure and Arrival cities
+            DepartureArrivalCities(
+                viewModel = viewModel,
+                modifier = Modifier
             )
 
             Spacer(Modifier.height(32.dp))
 
             //Description
+            Description(viewModel = viewModel, modifier = Modifier)
 
-            var descriptionTextState by remember {
-                mutableStateOf("")
-            }
-            Text(text = "Description")
-            Spacer(Modifier.height(8.dp))
-            TextField(
-                singleLine = false,
-                value = descriptionTextState,
-                onValueChange = { descriptionTextState = it },
-                maxLines = 6,
-                placeholder = { Text(text = "Write a description to say something or annunce somthing to yours passengers") },
-                modifier = Modifier.fillMaxWidth()
+            Spacer(Modifier.height(32.dp))
+
+            //Preferences
+            RadioButtonsPreferences(viewModel = viewModel, modifier = Modifier.fillMaxWidth())
+
+            Spacer(Modifier.height(32.dp))
+
+            //Auto
+
+            Spacer(Modifier.height(32.dp))
+
+            //Save button
+            SaveButton(
+                isSaveButtonEnable = isSaveButtonEnable,
+                onSaveRoute = onSaveRoute,
+                modifier = Modifier
             )
-
-            Spacer(Modifier.height(40.dp))
-
-            RadioButtonsPreferences(Modifier.fillMaxWidth())
-
-            SaveButton(isSaveButtonEnable, onSaveRoute)
 
         }
     }
 }
 
 @Composable
-fun SaveButton(isSaveButtonEnable: Boolean = false, onSaveRoute: () -> Unit) {
+fun Description(viewModel: CreateRouteViewModel, modifier: Modifier) {
+    Column(modifier = modifier) {
+        val descriptionTextState by viewModel.description.collectAsState()
+
+        Text(text = "Description", style = MaterialTheme.typography.h6)
+        Spacer(Modifier.height(8.dp))
+        TextField(
+            singleLine = false,
+            value = descriptionTextState,
+            onValueChange = { viewModel.setDescription(it) },
+            maxLines = 6,
+            placeholder = { Text(text = "Write a description to say something or annunce somthing to yours passengers") },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun DepartureArrivalCities(
+    viewModel: CreateRouteViewModel,
+    modifier: Modifier
+) {
+
+    val arrivalCity by viewModel.arrival.collectAsState()
+    val departureCity by viewModel.departure.collectAsState()
+
+    Column(modifier = modifier) {
+        //Departure and Arrival City
+        Text(text = "Departure and Arrival", style = MaterialTheme.typography.h6)
+        Spacer(modifier = Modifier.height(8.dp))
+        CityBoxView(
+            name = departureCity.name,
+            subtext = "From: \t\t",
+            onChangeDepartureCity = { viewModel.postEvent(CreateRouteEvent.LookingForDepartureCity) },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        CityBoxView(
+            name = arrivalCity.name,
+            subtext = "To: \t\t",
+            onChangeDepartureCity = { viewModel.postEvent(CreateRouteEvent.LookingForArrivalCity) },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun SaveButton(isSaveButtonEnable: Boolean = false, modifier: Modifier, onSaveRoute: () -> Unit) {
     Button(
         onClick = { onSaveRoute() },
         enabled = isSaveButtonEnable,
@@ -174,7 +202,7 @@ fun SaveButton(isSaveButtonEnable: Boolean = false, onSaveRoute: () -> Unit) {
 
 
 @Composable
-fun RadioButtonsPreferences(modifier: Modifier) {
+fun RadioButtonsPreferences(viewModel: CreateRouteViewModel, modifier: Modifier) {
     Card(modifier = modifier) {
         ConstraintLayout(
             modifier = Modifier
@@ -185,7 +213,8 @@ fun RadioButtonsPreferences(modifier: Modifier) {
             val (preferencesTitleText, infoButton, preferenceText, preferenceSwitch) = createRefs()
 
             Text(
-                "Preferences",
+                text = "Preferences",
+                style = MaterialTheme.typography.h6,
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(preferencesTitleText) {
@@ -194,9 +223,7 @@ fun RadioButtonsPreferences(modifier: Modifier) {
                         end.linkTo(parent.end)
                     })
 
-            var preferenceAcceptPassengerState by remember {
-                mutableStateOf(true)
-            }
+            val preferenceAcceptPassengerState by viewModel.doesOwnerNeedsApprove.collectAsState()
 
             //Dialog info setUp
             val infoDialogState = rememberSheetState()
@@ -237,7 +264,7 @@ fun RadioButtonsPreferences(modifier: Modifier) {
             Switch(
                 checked = preferenceAcceptPassengerState,
                 onCheckedChange = {
-                    preferenceAcceptPassengerState = !preferenceAcceptPassengerState
+                    viewModel.doesOwnerNeedsApprove(!preferenceAcceptPassengerState)
                 },
                 Modifier.constrainAs(preferenceSwitch) {
                     top.linkTo(preferencesTitleText.top, margin = 8.dp)
@@ -252,76 +279,77 @@ fun RadioButtonsPreferences(modifier: Modifier) {
 }
 
 @Composable
-fun DateAndTime(modifier: Modifier) {
+fun DateAndTime(viewModel: CreateRouteViewModel, modifier: Modifier) {
+    Card(elevation = 8.dp, modifier = modifier) {
+        Column(modifier = Modifier.padding(4.dp)) {
 
+            val todayDate by viewModel.date.collectAsState()
+            val todayTime by viewModel.time.collectAsState()
 
-    Column(modifier = modifier) {
-        Text(text = "Date and Time:")
+            Text(text = "Date and Time:", style = MaterialTheme.typography.h6)
 
-        Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            var todayDate by remember { mutableStateOf(LocalDate.now()) }
-            var todayTime by remember { mutableStateOf(LocalTime.now()) }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
 
-            val calendarState = rememberSheetState()
-            val clockState = rememberSheetState()
-            ClockDialog(
-                state = clockState,
-                config = ClockConfig(is24HourFormat = true),
-                selection = ClockSelection.HoursMinutes { hours, minutes ->
-                    todayTime = LocalTime.now().withHour(hours).withMinute(minutes)
-                }
-            )
-            CalendarDialog(
-                state = calendarState,
-                selection = CalendarSelection.Date {
-                    todayDate = it
-                }
-            )
-
-            //Date
-            OutlinedTextField(
-                value = todayDate.appendTodayTomorrow(),
-                onValueChange = {},
-                readOnly = true,
-                maxLines = 1,
-                modifier = Modifier.weight(1f),
-                trailingIcon = {
-                    IconButton(onClick = { calendarState.show() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.calendar_today),
-                            contentDescription = "change date"
-                        )
+                val calendarState = rememberSheetState()
+                val clockState = rememberSheetState()
+                ClockDialog(
+                    state = clockState,
+                    config = ClockConfig(is24HourFormat = true),
+                    selection = ClockSelection.HoursMinutes { hours, minutes ->
+                        viewModel.setTime(LocalTime.now().withHour(hours).withMinute(minutes))
                     }
-                }
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            //Time
-            OutlinedTextField(
-                value = todayTime.show12HoursFormatter(),
-                onValueChange = {},
-                readOnly = true,
-                maxLines = 1,
-                modifier = Modifier.weight(1f),
-                trailingIcon = {
-                    IconButton(onClick = { clockState.show() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.access_time),
-                            contentDescription = "change date"
-                        )
+                )
+                CalendarDialog(
+                    state = calendarState,
+                    selection = CalendarSelection.Date {
+                        viewModel.setDate(it)
                     }
-                }
-            )
+                )
+
+                //Date
+                OutlinedTextField(
+                    value = todayDate.appendTodayTomorrow(),
+                    onValueChange = {},
+                    readOnly = true,
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f),
+                    trailingIcon = {
+                        IconButton(onClick = { calendarState.show() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.calendar_today),
+                                contentDescription = "change date"
+                            )
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                //Time
+                OutlinedTextField(
+                    value = todayTime.show12HoursFormatter(),
+                    onValueChange = {},
+                    readOnly = true,
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f),
+                    trailingIcon = {
+                        IconButton(onClick = { clockState.show() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.access_time),
+                                contentDescription = "change date"
+                            )
+                        }
+                    }
+                )
+            }
         }
     }
-
 }
 
 @Composable
@@ -376,6 +404,11 @@ fun EventsUI(viewModel: CreateRouteViewModel, navController: NavController) {
             viewModel.postEvent(CreateRouteEvent.Success)
         }
 
+        CreateRouteEvent.LoadAuto -> {
+            navController.navigate(LoadAutoNavRoute.createRoute(viewModel.user.UUID))
+            viewModel.postEvent(CreateRouteEvent.Success)
+        }
+
         else -> {}
     }
 
@@ -390,12 +423,11 @@ fun EventsUI(viewModel: CreateRouteViewModel, navController: NavController) {
 @Composable
 fun CreateRoutePreview() {
     CreateRouteView(
-        departureCity = City(name = "Guadalajara, Jalisco, Mexico"),
-        arrivalCity = City(name = "Colotlan, Jalisco, Mexico"),
-        onChangeDepartureCity = {},
-        onChangeArrivalCity = {},
+        viewModel = koinViewModel(),
         onSaveRoute = {},
-        modifier = Modifier.padding(8.dp).fillMaxSize()
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxSize()
     )
 }
 
