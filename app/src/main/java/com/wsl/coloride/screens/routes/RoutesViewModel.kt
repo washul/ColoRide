@@ -47,7 +47,8 @@ class RoutesViewModel(
                 .onFailure { /*postBaseEvent(BaseEvent.HandleFailure(it))*/ }
                 .onSuccess {
 //                    Log.v("FETCH ROUTE LIST", it.toString())
-                    _routesList.postValue(it)
+                    if (it.isNotEmpty())
+                        _routesList.postValue(it)
 //                    postBaseEvent(BaseEvent.ShowLoading(false))
                 }
         }

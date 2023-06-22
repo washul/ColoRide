@@ -1,6 +1,7 @@
 package com.wsl.coloride.screens.create_route.ui
 
 import android.annotation.SuppressLint
+import android.text.SpannableString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,6 +58,7 @@ import com.wsl.coloride.screens.loadauto.ui.LoadAutoNavRoute
 import com.wsl.coloride.screens.searchCity.ui.SearchCityNavRoute
 import com.wsl.coloride.ui.main.AutoResizedText
 import com.wsl.coloride.ui.theme.Secundary
+import com.wsl.coloride.ui.theme.Typography
 import com.wsl.coloride.util.observeAsState
 import com.wsl.domain.model.City
 import com.wsl.domain.model.PlaceOfTheRoute
@@ -128,6 +130,7 @@ private fun CreateRouteView(
             Spacer(Modifier.height(32.dp))
 
             //Auto
+            Auto("Honda, CRV-V, Black, 6 seats")
 
             Spacer(Modifier.height(32.dp))
 
@@ -140,6 +143,17 @@ private fun CreateRouteView(
 
         }
     }
+}
+
+@Composable
+fun Auto(title: String) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Car", style = MaterialTheme.typography.h6)
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Text(text = title)
+        }
+    }
+
 }
 
 @Composable

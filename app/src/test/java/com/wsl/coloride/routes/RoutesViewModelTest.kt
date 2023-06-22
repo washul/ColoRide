@@ -55,4 +55,27 @@ class RoutesViewModelTest {
         coVerify(exactly = 1) { getRoutesUseCase(any()) }
         assert(viewModel.routesList.value == value)
     }
+
+    @Test
+    fun `when viewModel GetRoutesUseCase return empty, keep the last value`() = runTest {
+        //Given
+        val value: Map<Int, List<Route>> = mapOf(0 to listOf(), 1 to listOf<Route>())
+        val response: Result.Success<Map<Int, List<Route>>> = Result.Success( value )
+        coEvery { getRoutesUseCase(any()) } returns response
+        viewModel = RoutesViewModel(getRoutesUseCase)
+
+
+        val valueEmpty: Map<Int, List<Route>> = emptyMap()
+        val responseEmpty = Result.Success(valueEmpty)
+
+        coEvery { getRoutesUseCase(any()) } returns responseEmpty
+
+        //When
+
+        viewModel.fetch()
+
+        //Then
+        coVerify(exactly = 2) { getRoutesUseCase(any()) }
+        assert(viewModel.routesList.value == value)
+    }
 }

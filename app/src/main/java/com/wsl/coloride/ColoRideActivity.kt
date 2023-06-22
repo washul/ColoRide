@@ -10,11 +10,15 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 import com.wsl.coloride.screens.create_route.ui.CreateRouteNavRoute
 import com.wsl.coloride.screens.create_route.ui.CreateRouteScreen
 import com.wsl.coloride.screens.detail.ui.DetailNavRoute
@@ -33,6 +37,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /** AppCenter init */
+        AppCenter.start(application, "00542a98-6e15-4d8a-b877-9f870ecc620f", Analytics::class.java, Crashes::class.java)
+
         setContent {
             ColoRideTheme {
                 // A surface container using the 'background' color from the theme
@@ -47,7 +55,7 @@ class MainActivity : ComponentActivity() {
                             .systemBarsPadding()
                     ) {
 
-                        val navController = rememberNavController()
+                        val navController: NavHostController = rememberNavController()
                         NavHost(
                             navController = navController,
                             startDestination = RouteNavRoute.route
@@ -72,8 +80,12 @@ class MainActivity : ComponentActivity() {
                                 arguments = listOf(navArgument(LoadAutoNavRoute.USER_PARAM) {
                                     type = NavType.StringType
                                 })
-                            ){ backStack ->
-                                LoadAutoScreen(user = backStack.arguments?.getString(LoadAutoNavRoute.USER_PARAM))
+                            ) { backStack ->
+                                LoadAutoScreen(
+                                    user = backStack.arguments?.getString(
+                                        LoadAutoNavRoute.USER_PARAM
+                                    ), navController = navController
+                                )
                             }
                             composable(
                                 DetailNavRoute.route,

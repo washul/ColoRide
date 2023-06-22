@@ -3,6 +3,7 @@ package com.wsl.coloride.screens.create_route
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wsl.domain.city.usecases.GetCityPreferenceUseCase
+import com.wsl.domain.model.Auto
 import com.wsl.domain.model.City
 import com.wsl.domain.model.PlaceOfTheRoute
 import com.wsl.domain.model.User
@@ -31,6 +32,8 @@ class CreateRouteViewModel(
     var description: MutableStateFlow<String> = MutableStateFlow("")
         private set
     var doesOwnerNeedsApprove: MutableStateFlow<Boolean> = MutableStateFlow(true)
+        private set
+    var auto: MutableStateFlow<Auto> = MutableStateFlow(Auto())
         private set
 
 
