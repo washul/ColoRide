@@ -1,8 +1,11 @@
 # ColoRide | [![Build status](https://build.appcenter.ms/v0.1/apps/b69835df-7738-4d14-bee4-a47bd188633d/branches/develop/badge)](https://appcenter.ms)
 This is an Android app to help handle the rides from two cities. 
 
+
+develop: [![Build status](https://build.appcenter.ms/v0.1/apps/b69835df-7738-4d14-bee4-a47bd188633d/branches/develop/badge)](https://appcenter.ms)
+
 ## Starting 🚀
-_This is open source software, my try to add value to the humanity._
+_This is open source software, my try to add value to humanity._
 
 ### Prerequisites 📋
 _Android Studio Flamingo | 2022.2.1_
