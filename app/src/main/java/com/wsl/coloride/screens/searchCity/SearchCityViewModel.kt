@@ -55,7 +55,10 @@ class SearchCityViewModel(
                     name = name
                 )
             )
-                .onFailure { /**Handle failure*/ }
+                .onFailure {
+                    /**Handle failure*/
+                    Log.e("Support", it.toString())
+                }
                 .onSuccess {
                     cities.emit(it)
                 }

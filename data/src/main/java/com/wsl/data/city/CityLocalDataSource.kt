@@ -20,7 +20,6 @@ class CityLocalDataSource(private val preferences: MainUserPreferences) {
             PlaceOfTheRoute.Departure -> preferences.cityDeparturePreference = city
             else -> { preferences.cityDeparturePreference }
         }
-
     }
 
 }

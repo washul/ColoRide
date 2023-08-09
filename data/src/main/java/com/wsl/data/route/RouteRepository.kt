@@ -4,6 +4,7 @@ import com.wsl.domain.model.Route
 import com.wsl.domain.route.datasource.RouteDataSource
 import com.wsl.utils.Failure
 import com.wsl.utils.Result
+import com.wsl.utils.onSuccess
 import java.time.LocalDateTime
 
 class RouteRepository(
@@ -17,9 +18,14 @@ class RouteRepository(
         endDate: LocalDateTime,
         cityDeparture: String,
         cityArrival: String
-    ):
-            Result<Failure, Map<Int, List<Route>>> {
+    ): Result<Failure, Map<Int, List<Route>>> {
         return remoteDataSource.getRoutes(startDate, endDate, cityDeparture, cityArrival)
+    }
+
+    override suspend fun createRoute(route: Route): Result<Failure, Unit> {
+        return remoteDataSource.createRoute(
+            route
+        )
     }
 
 

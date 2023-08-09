@@ -43,4 +43,5 @@ dependencies {
     def version_retrofit = "2.7.2"
     api "com.squareup.retrofit2:retrofit:${version_retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${version_retrofit}"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.0"
 }

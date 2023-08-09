@@ -16,11 +16,16 @@ class CityRemoteDataSource(
     private val mapperFace: CityMappersFace
 ) {
 
-    suspend fun searchCityByName(name: String): Result<Failure, List<City?>> =
-        request(
-            { service.searchCity(name) },
+    suspend fun searchCityByName(name: String): Result<Failure, List<City?>> {
+        val response = service.searchCity(name)
+        return request(
+            { response },
             MainCityApiResponseObject()
-        ).map { it.geonames.mapperCityMapper() }
+        ).map {
+            it.geonames.mapperCityMapper()
+        }
+    }
+
 
 
 }

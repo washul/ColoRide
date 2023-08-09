@@ -8,9 +8,14 @@ import java.time.LocalDateTime
 interface RouteDataSource {
 
     suspend fun getRoutes(
-        startDate: LocalDateTime, endDate: LocalDateTime,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
         cityDeparture: String,
         cityArrival: String
     ): Result<Failure, Map<Int, List<Route>>>
+
+    suspend fun createRoute(
+        route: Route
+    ): Result<Failure, Unit>
 
 }

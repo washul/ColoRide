@@ -6,10 +6,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -23,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -30,7 +39,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.wsl.coloride.R
 import com.wsl.coloride.ui.main.AutoResizedText
-import com.wsl.coloride.ui.theme.Secundary
+import com.wsl.coloride.ui.theme.shapes
 import com.wsl.domain.model.Route
 import com.wsl.domain.model.User
 import com.wsl.domain.model.UserType
@@ -42,14 +51,20 @@ import com.wsl.utils.extensions.showTodayTomorrow
 @Composable
 fun RouteCard(route: Route = Route(), onClickItem: (Route) -> Unit) {
 
+    RouteCardView(route = route)
+
+}
+
+@Composable
+fun RouteCardView(route: Route) {
     val maxHeight = 250.dp
     val minHeight = 180.dp
 
     var isSmallSize by rememberSaveable { mutableStateOf(true) }
     val size by animateDpAsState(targetValue = if (isSmallSize) minHeight else maxHeight)
 
-    Card(elevation = 8.dp,
-        backgroundColor = Color.White,
+    Card(
+        shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .height(size)
             .fillMaxWidth()
@@ -120,8 +135,7 @@ fun Header(route: Route, modifier: Modifier) {
         // title
         Text(
             text = route.title,
-            style = MaterialTheme.typography.h6,
-            color = Color.Black,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
@@ -132,7 +146,7 @@ fun Header(route: Route, modifier: Modifier) {
                 text = route.description,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
                 textAlign = TextAlign.Justify,
                 modifier = Modifier
@@ -178,7 +192,7 @@ fun LeftSide(route: Route, modifier: Modifier) {
     ConstraintLayout(
         modifier
             .width(100.dp)
-            .background(Secundary)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
 
         val (glideProfileImage, rowRating, textDate, textTime) = createRefs()
@@ -214,7 +228,7 @@ fun LeftSide(route: Route, modifier: Modifier) {
             //Date
             Text(
                 text = route.date.showTodayTomorrow(),
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.labelMedium,
                 fontSize = 20.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
@@ -230,7 +244,7 @@ fun LeftSide(route: Route, modifier: Modifier) {
             //Time
             Text(
                 text = route.date.showHourAsString(),
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.labelMedium,
                 fontSize = 20.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
@@ -301,4 +315,10 @@ fun PassengerMiniature(passenger: User, modifier: Modifier) {
         )
         AutoResizedText(text = passenger.userName, modifier = modifier.width(60.dp))
     }
+}
+
+@Preview
+@Composable
+fun RouteCardPreview() {
+    RouteCardView(route = Route())
 }

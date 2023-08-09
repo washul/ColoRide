@@ -1,5 +1,6 @@
 package com.wsl.coloride.di
 
+import com.wsl.coloride.screens.autolist.AutoListViewModel
 import com.wsl.coloride.screens.create_route.CreateRouteViewModel
 import com.wsl.coloride.screens.detail.DetailViewModel
 import com.wsl.coloride.screens.loadauto.LoadAutoViewModel
@@ -11,7 +12,8 @@ import org.koin.dsl.module
 val appModule = module {
     viewModel { RoutesViewModel(get()) }
     viewModel { DetailViewModel() }
-    viewModel { CreateRouteViewModel(get()) }
+    viewModel { CreateRouteViewModel(get(), get()) }
     viewModel { SearchCityViewModel(get(), get()) }
-    viewModel { LoadAutoViewModel() }
+    viewModel { LoadAutoViewModel(get(), get()) }
+    viewModel { AutoListViewModel(get(), get()) }
 }

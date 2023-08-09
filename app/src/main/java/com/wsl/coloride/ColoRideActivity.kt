@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,9 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.wsl.coloride.screens.autolist.ui.AutoListNavRoute
+import com.wsl.coloride.screens.autolist.ui.AutoListScreen
 import com.wsl.coloride.screens.create_route.ui.CreateRouteNavRoute
 import com.wsl.coloride.screens.create_route.ui.CreateRouteScreen
 import com.wsl.coloride.screens.detail.ui.DetailNavRoute
@@ -38,15 +38,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /** AppCenter init */
-        AppCenter.start(application, "00542a98-6e15-4d8a-b877-9f870ecc620f", Analytics::class.java, Crashes::class.java)
-
         setContent {
+            val systemUIController = rememberSystemUiController()
+            systemUIController.setStatusBarColor(color = MaterialTheme.colorScheme.tertiaryContainer)
+
+
             ColoRideTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
 
                     MainScaffold(
@@ -60,8 +61,15 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = RouteNavRoute.route
                         ) {
-                            composable(RouteNavRoute.route) { RoutesScreen(navController = navController) }
-                            composable(CreateRouteNavRoute.route) { CreateRouteScreen(navController = navController) }
+
+                            composable(route = RouteNavRoute.route) {
+                                RoutesScreen(navController = navController)
+                            }
+
+                            composable(CreateRouteNavRoute.route) {
+                                CreateRouteScreen(navController = navController)
+                            }
+
                             composable(
                                 SearchCityNavRoute.route,
                                 arguments = listOf(navArgument(SearchCityNavRoute.SEARCH_PLACE_PARAM) {
@@ -75,6 +83,20 @@ class MainActivity : ComponentActivity() {
                                     navController = navController
                                 )
                             }
+
+                            composable(
+                                AutoListNavRoute.route,
+                                arguments = listOf(navArgument(AutoListNavRoute.USER_PARAM) {
+                                    type = NavType.StringType
+                                })
+                            ) { backStack ->
+                                AutoListScreen(
+                                    user = backStack.arguments?.getString(
+                                        AutoListNavRoute.USER_PARAM
+                                    ), navController = navController
+                                )
+                            }
+
                             composable(
                                 LoadAutoNavRoute.route,
                                 arguments = listOf(navArgument(LoadAutoNavRoute.USER_PARAM) {
@@ -87,6 +109,7 @@ class MainActivity : ComponentActivity() {
                                     ), navController = navController
                                 )
                             }
+
                             composable(
                                 DetailNavRoute.route,
                                 arguments = listOf(navArgument(DetailNavRoute.ROUTE_ID_PARAM) {
@@ -96,7 +119,6 @@ class MainActivity : ComponentActivity() {
                                 DetailScreen(routeId = backStack.arguments?.getString(DetailNavRoute.ROUTE_ID_PARAM))
                             }
                         }
-
                     }
                 }
             }

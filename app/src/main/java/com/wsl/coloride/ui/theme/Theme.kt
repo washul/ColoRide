@@ -1,50 +1,36 @@
 package com.wsl.coloride.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.dynamicLightColorScheme
 
-private val DarkColorPalette = darkColors(
-    primary = onSurface,
-    primaryVariant = Primary,
-    secondary = Secundary
-)
 
-private val LightColorPalette = lightColors(
-    primary = Primary,
-    primaryVariant = OptionalColor,
-    secondary = Secundary
 
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
-)
-
+//private val dynamicColorAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+private val dynamicColorAvailable = false
 @Composable
-fun ColoRideTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+fun ColoRideTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme: ColorScheme = when {
+        dynamicColorAvailable -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else -> {
+            if (darkTheme) DarkColorPalette else lightColorScheme
+        }
     }
 
     MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
+        colorScheme = colorScheme,
+        typography = typography,
+        shapes = shapes,
         content = content
     )
 }

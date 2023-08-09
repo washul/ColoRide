@@ -12,4 +12,6 @@ sealed class CreateRouteEvent {
 
     object Success: CreateRouteEvent()
 
+    object NoUserFind: CreateRouteEvent()
+
 }

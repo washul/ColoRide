@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,14 +48,22 @@ fun SearchCityScreen(
 
     viewModel.setPlaceOfTheRoute(place ?: return)
 
-    val citySearchModel: CitySearchModelState by viewModel.citySearchModelState.collectAsState(
+    val citySearchModel by viewModel.citySearchModelState.collectAsState(
         initial = CitySearchModelState.Empty
     )
+
+    var items = remember { mutableStateListOf(
+        "Colotlan",
+        "Guadalajara"
+    ) }
+
     SearchCityView(
         citySearchModel = citySearchModel,
         onDismiss = { navController.popBackStack() },
         onSearchTextChanged = { viewModel.onSearchTextChanged(it) },
         onClearClick = { viewModel.onClearClick() },
+        place = place,
+        historyItems = items,
         onItemClick = {
             viewModel.onCitySelected(it)
             navController.popBackStack()
@@ -60,14 +71,15 @@ fun SearchCityScreen(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCityView(
     citySearchModel: CitySearchModelState,
     onSearchTextChanged: (String) -> Unit = {},
     onDismiss: () -> Unit,
     onClearClick: () -> Unit = {},
-    onItemClick: (City) -> Unit
+    onItemClick: (City) -> Unit,
+    historyItems: List<String> = emptyList(),
+    place: PlaceOfTheRoute
 ) {
     Scaffold(
         topBar = {
@@ -76,14 +88,21 @@ fun SearchCityView(
                 elevation = 0.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CustomSearchBar(
+                CustomSearchBarM3(
                     searchText = citySearchModel.searchText,
-                    placeholderText = "Search a city",
+                    placeholder = if (place is PlaceOfTheRoute.Arrival) "Where we go?" else "Where did we come from?",
+                    onSearchTextChanged = onSearchTextChanged,
+                    onNavigateBack = { onDismiss() },
+                    historyItems = historyItems
+                )
+                /*CustomSearchBar(
+                    searchText = citySearchModel.searchText,
+                    placeholderText = if (place == PlaceOfTheRoute.Arrival) "Where we go?" else "Where did we come from?",
                     onSearchTextChanged = { onSearchTextChanged(it) },
                     onClearClick = { onClearClick() },
                     onNavigateBack = { onDismiss() },
                     matchesFound = citySearchModel.cities.isNotEmpty()
-                )
+                )*/
             }
         },
         modifier = Modifier
@@ -108,5 +127,17 @@ fun SearchCityView(
 @Preview
 @Composable
 fun SearchCityScreenPreview() {
-    SearchCityView(CitySearchModelState(), {}, {}, {}, {})
+    SearchCityView(
+        citySearchModel = CitySearchModelState(),
+        onSearchTextChanged = {},
+        onDismiss = {},
+        onClearClick = {},
+        onItemClick = {},
+        historyItems = remember {
+            mutableStateListOf(
+                "Colotlan",
+                "Guadalajara"
+            )
+        },
+        place = PlaceOfTheRoute.Departure)
 }

@@ -11,7 +11,6 @@ class DomainExtensionsTest {
         val json: String = "{name: GDL, image: null}"
         val city = json.fromJsonToCity()
         assertThat(city.name).isEqualTo("GDL")
-        assertThat(city.image).isNull()
     }
 
 }

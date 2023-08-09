@@ -43,6 +43,13 @@ class RouteRemoteDataSource {
         )
     }
 
+    suspend fun createRoute(
+        route: Route
+    ): Result<Failure, Unit> {
+        //simulate an answer from MW
+        return Result.Success(Unit)
+    }
+
 }
 
 private fun getRoutesMock(): List<Route> {

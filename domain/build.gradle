@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -53,4 +54,9 @@ dependencies {
     //GSON
     def gson_version = "2.7"
     implementation "com.google.code.gson:gson:$gson_version"
+
+    //Room
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.0"
 }

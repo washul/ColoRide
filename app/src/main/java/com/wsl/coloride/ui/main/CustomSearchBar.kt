@@ -115,7 +115,6 @@ fun CityItemRow(city: City, onClick: () -> Unit) {
     }
 }
 
-
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -130,8 +129,6 @@ fun CustomSearchBarView(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
-
-
     TopAppBar(title = { Text("") }, navigationIcon = {
         IconButton(onClick = { onNavigateBack() }) {
             Icon(
@@ -141,7 +138,6 @@ fun CustomSearchBarView(
             )
         }
     }, actions = {
-
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()

@@ -71,7 +71,6 @@ class RoutesViewModelTest {
         coEvery { getRoutesUseCase(any()) } returns responseEmpty
 
         //When
-
         viewModel.fetch()
 
         //Then

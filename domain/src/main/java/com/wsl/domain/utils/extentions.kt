@@ -1,8 +1,10 @@
 package com.wsl.domain.utils
 
 import com.google.gson.Gson
+import com.wsl.domain.model.Auto
 import com.wsl.domain.model.City
 import com.wsl.domain.model.PlaceOfTheRoute
+import com.wsl.domain.model.entities.auto.AutoEntity
 
 fun String.fromJsonToCity(): City = Gson().fromJson(this, City::class.java)
 
